@@ -21,10 +21,23 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'https://nepal-yatra.onrender.com',
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'https://nepal-yatra.onrender.com',
+        'http://localhost:5173',
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   })
 );
+
 app.use('/api/auth', userRoute);
 app.use('/api/premium', premiumRoute);
 app.use('/api/destination', destinationRoute);
